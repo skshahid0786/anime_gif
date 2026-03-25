@@ -1,17 +1,13 @@
 export default async function handler(req, res) {
     const { type = 'sfw', cat = 'waifu' } = req.query;
-
     try {
-        // We use POST for both Home (sfw) and NSFW now to get multiple images
         const isMany = req.method === 'POST';
         const targetPath = isMany ? `many/${type}/${cat}` : `${type}/${cat}`;
-        
         const apiRes = await fetch(`https://api.waifu.pics/${targetPath}`, {
             method: req.method,
             headers: { 'Content-Type': 'application/json' },
             body: isMany ? JSON.stringify({}) : null
         });
-
         const data = await apiRes.json();
         res.status(200).json(data);
     } catch (error) {
