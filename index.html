@@ -6,46 +6,25 @@
     <title>AnimeGif | API Dashboard</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css">
     <style>
-        :root { --bg: #0b0e14; --sidebar: #151921; --accent: #72a9e8; --orange: #ff9f43; --blue: #48dbfb; }
-        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: #fff; display: flex; overflow-x: hidden; }
-        
-        .sidebar { width: 260px; height: 100vh; background: var(--sidebar); position: sticky; top: 0; transition: 0.3s; z-index: 100; border-right: 1px solid #252a35; }
-        .sidebar.collapsed { width: 0; overflow: hidden; border: none; }
-        .logo { padding: 30px; font-weight: bold; font-size: 22px; color: var(--accent); border-bottom: 1px solid #252a35; white-space: nowrap; }
+        :root { --bg: #0b0e14; --sidebar: #151921; --accent: #72a9e8; }
+        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: #fff; display: flex; }
+        .sidebar { width: 260px; height: 100vh; background: var(--sidebar); position: sticky; top: 0; transition: 0.3s; border-right: 1px solid #252a35; }
+        .sidebar.collapsed { width: 0; overflow: hidden; }
+        .logo { padding: 30px; font-weight: bold; font-size: 22px; color: var(--accent); border-bottom: 1px solid #252a35; }
         .nav-menu { list-style: none; padding: 10px; margin: 0; }
-        .nav-item { padding: 15px 20px; cursor: pointer; border-radius: 8px; margin-bottom: 5px; display: flex; align-items: center; gap: 15px; color: #a4a9b5; transition: 0.2s; }
+        .nav-item { padding: 15px 20px; cursor: pointer; border-radius: 8px; margin-bottom: 5px; display: flex; align-items: center; gap: 15px; color: #a4a9b5; }
         .nav-item.active, .nav-item:hover { background: #252a35; color: #fff; }
-
-        .main-wrapper { flex: 1; min-width: 0; }
-        .navbar { background: var(--sidebar); padding: 15px 25px; display: flex; align-items: center; gap: 20px; border-bottom: 1px solid #252a35; position: sticky; top: 0; z-index: 99; }
+        .main-wrapper { flex: 1; }
+        .navbar { background: var(--sidebar); padding: 15px 25px; display: flex; align-items: center; gap: 20px; border-bottom: 1px solid #252a35; }
         .menu-toggle { background: none; border: none; color: #fff; font-size: 22px; cursor: pointer; }
-
-        .page { display: none; padding: 25px; animation: fadeIn 0.3s ease; }
+        .page { display: none; padding: 25px; }
         .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
         .scroll-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; }
-        .scroll-grid img { width: 100%; border-radius: 12px; transition: 0.3s; border: 1px solid #252a35; }
-        .loader-text { text-align: center; padding: 40px; color: var(--accent); font-weight: bold; }
-
-        .docs-content { max-width: 800px; margin: auto; line-height: 1.6; }
-        .info-box { padding: 15px; border-radius: 8px; margin: 20px 0; display: flex; gap: 15px; align-items: center; }
-        .info-box.blue { border: 1px solid var(--blue); color: var(--blue); background: rgba(72, 219, 251, 0.05); }
-        .info-box.orange { border: 1px solid var(--orange); color: var(--orange); background: rgba(255, 159, 67, 0.05); }
-        .cat-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 15px 0; }
-        .cat-list span { background: #252a35; padding: 4px 12px; border-radius: 20px; font-size: 13px; border: 1px solid #30363d; }
-        .api-route { background: #000; padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin: 10px 0; border: 1px solid #252a35; }
-        .method { background: #2ecc71; color: #000; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 12px; }
-        .method.post { background: var(--accent); }
-        .code-block { background: #000; padding: 15px; border-radius: 8px; color: #7bed9f; overflow-x: auto; border: 1px solid #252a35; }
-        .docs-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .docs-table th, .docs-table td { text-align: left; padding: 12px; border-bottom: 1px solid #252a35; }
-
+        .scroll-grid img { width: 100%; border-radius: 12px; border: 1px solid #252a35; }
         .controls { display: flex; gap: 10px; margin-bottom: 20px; }
         select { background: #252a35; color: #fff; border: 1px solid #30363d; padding: 12px; border-radius: 8px; flex: 1; outline: none; }
-        .btn-nsfw { background: #ff4757; color: #fff; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        .btn-nsfw:hover { background: #ff6b81; }
-        .single-viewer img { max-width: 100%; border-radius: 15px; display: block; margin: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .btn-action { background: #ff4757; color: #fff; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .single-viewer img { max-width: 100%; border-radius: 15px; display: block; margin: auto; }
     </style>
 </head>
 <body>
@@ -55,7 +34,6 @@
         <ul class="nav-menu">
             <li class="nav-item active" onclick="showPage('home')"><i class="mdi mdi-home"></i> Home</li>
             <li class="nav-item" onclick="showPage('nsfw')"><i class="mdi mdi-incognito"></i> NSFW</li>
-            <li class="nav-item" onclick="showPage('docs')"><i class="mdi mdi-file-document"></i> API Docs</li>
         </ul>
     </nav>
 
@@ -67,7 +45,6 @@
 
         <section id="page-home" class="page active">
             <div id="scroll-container" class="scroll-grid"></div>
-            <div id="loading-trigger" class="loader-text">Fetching from AnimeGif API...</div>
         </section>
 
         <section id="page-nsfw" class="page">
@@ -78,39 +55,10 @@
                     <option value="trap">trap</option>
                     <option value="blowjob">blowjob</option>
                 </select>
-                <button class="btn-nsfw" onclick="fetchNsfw()">Get Image</button>
+                <button class="btn-action" onclick="fetchNsfw()">Get Image</button>
             </div>
             <div class="single-viewer">
                 <img id="nsfw-display" src="" alt="">
-            </div>
-        </section>
-
-        <section id="page-docs" class="page">
-            <div class="docs-content">
-                <h1>AnimeGif API Docs</h1>
-                <p>Simple and fast anime content delivery.</p>
-                
-                <div class="info-box blue">
-                    <i class="mdi mdi-information"></i>
-                    All requests should be routed through your <code>/api/get-waifu</code> endpoint.
-                </div>
-
-                <h3>Available Moods</h3>
-                <div class="cat-list">
-                    <span>waifu</span><span>neko</span><span>shinobu</span><span>megumin</span><span>happy</span><span>smile</span><span>dance</span><span>wink</span><span>poke</span><span>kick</span>
-                </div>
-
-                <h3>Single Request</h3>
-                <div class="api-route">
-                    <code>/api/get-waifu?type=sfw&cat=mood</code> <span class="method">GET</span>
-                </div>
-
-                <h3>Bulk Request</h3>
-                <div class="api-route">
-                    <code>/api/get-waifu?type=sfw&cat=mood</code> <span class="method post">POST</span>
-                </div>
-
-                <pre class="code-block">{ "files": ["url1", "url2"] }</pre>
             </div>
         </section>
     </div>
@@ -118,9 +66,7 @@
     <script>
         let isFetching = false;
 
-        function toggleSidebar() { 
-            document.getElementById('sidebar').classList.toggle('collapsed'); 
-        }
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('collapsed'); }
 
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -130,43 +76,39 @@
             if(pageId === 'home' && !document.getElementById('scroll-container').hasChildNodes()) loadBatch();
         }
 
-        // Logic for Home Grid (Uses POST to get multiple files)
         async function loadBatch() {
             if (isFetching) return;
             isFetching = true;
             try {
+                // Must use POST for multiple images
                 const res = await fetch('/api/get-waifu?type=sfw&cat=waifu', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({})
                 });
                 const data = await res.json();
-                
                 const container = document.getElementById('scroll-container');
                 if (data.files) {
                     data.files.forEach(url => {
                         const img = document.createElement('img');
                         img.src = url;
-                        img.loading = "lazy";
                         container.appendChild(img);
                     });
                 }
-            } catch (e) { console.error("API error on home load"); }
+            } catch (e) { console.error("Home grid failed"); }
             isFetching = false;
         }
 
-        // Logic for NSFW (Uses GET to get single url)
         async function fetchNsfw() {
             const cat = document.getElementById('nsfw-cats').value;
-            const display = document.getElementById('nsfw-display');
             try {
+                // GET is fine for single images
                 const res = await fetch(`/api/get-waifu?type=nsfw&cat=${cat}`);
                 const data = await res.json();
-                if (data.url) display.src = data.url;
-            } catch (e) { console.error("NSFW API error"); }
+                if (data.url) document.getElementById('nsfw-display').src = data.url;
+            } catch (e) { console.error("NSFW failed"); }
         }
 
-        // Infinite scroll trigger
         window.addEventListener('scroll', () => {
             if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 800) {
                 if(document.getElementById('page-home').classList.contains('active')) loadBatch();
