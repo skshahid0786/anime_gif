@@ -98,8 +98,96 @@
         </section>
 
         <section id="page-docs" class="page">
-            <div class="docs-card"><h2>API Documentation</h2><p>Check console for endpoints.</p></div>
-        </section>
+    <div class="docs-content">
+        <h1>AnimeGif API Console</h1>
+        <p>Integrate high-quality anime visuals into your apps using our simple REST API.</p>
+        
+        <div class="info-box blue">
+            <i class="mdi mdi-information"></i>
+            <div>
+                <strong>Base URL:</strong> <code>https://animegif-ten.vercel.app/api/get-waifu</code>
+            </div>
+        </div>
+
+        <h3>1. Requesting Data</h3>
+        <p>You can request images in two ways: <strong>Single</strong> (one URL) or <strong>Collection</strong> (30 URLs at once).</p>
+        
+        <table class="docs-table">
+            <tr>
+                <th>Method</th>
+                <th>Path</th>
+                <th>Result</th>
+            </tr>
+            <tr>
+                <td><span class="method">GET</span></td>
+                <td><code>?type=sfw&cat=happy</code></td>
+                <td>1 Random Image URL</td>
+            </tr>
+            <tr>
+                <td><span class="method" style="background:var(--accent)">POST</span></td>
+                <td><code>?type=sfw&cat=dance</code></td>
+                <td>Array of 30 Image URLs</td>
+            </tr>
+        </table>
+
+        <h3>2. Understanding the Output</h3>
+        <p>The API always returns a JSON object. Here is what you will see:</p>
+
+        <div class="code-block">
+// If you used GET (Single)
+{
+  "url": "https://api.waifu.pics/sfw/happy/392.gif"
+}
+
+// If you used POST (Collection)
+{
+  "files": [
+    "https://api.waifu.pics/sfw/dance/1.gif",
+    "https://api.waifu.pics/sfw/dance/2.gif",
+    ... // 28 more links
+  ]
+}
+        </div>
+
+        <h3>3. Implementation Examples</h3>
+        
+        <p><strong>JavaScript (Web Apps)</strong></p>
+        <div class="code-block">
+async function getAnime() {
+  const response = await fetch('https://animegif-ten.vercel.app/api/get-waifu?type=sfw&cat=smile');
+  const data = await response.json();
+  console.log(data.url); // Use this link in your img tag
+}
+        </div>
+
+        <p><strong>Python (Bots & Scripts)</strong></p>
+        <div class="code-block" style="color: #72a9e8;">
+import requests
+
+url = "https://animegif-ten.vercel.app/api/get-waifu"
+params = {"type": "sfw", "cat": "waifu"}
+
+# For a single image
+response = requests.get(url, params=params)
+print(response.json()['url'])
+
+# For a collection
+response = requests.post(url, params=params)
+print(response.json()['files'])
+        </div>
+
+        <h3>4. All Available Categories</h3>
+        <p><strong>SFW (Safe):</strong></p>
+        <div class="cat-list">
+            <span>waifu</span><span>neko</span><span>shinobu</span><span>megumin</span><span>bully</span><span>cuddle</span><span>cry</span><span>hug</span><span>awoo</span><span>kiss</span><span>lick</span><span>pat</span><span>smug</span><span>bonk</span><span>yeet</span><span>blush</span><span>smile</span><span>wave</span><span>highfive</span><span>handhold</span><span>nom</span><span>bite</span><span>glomp</span><span>slap</span><span>kill</span><span>kick</span><span>happy</span><span>wink</span><span>poke</span><span>dance</span><span>cringe</span>
+        </div>
+        <p><strong>NSFW (Restricted):</strong></p>
+        <div class="cat-list">
+            <span style="border-color:#ff4757">waifu</span><span style="border-color:#ff4757">neko</span><span style="border-color:#ff4757">trap</span><span style="border-color:#ff4757">blowjob</span>
+        </div>
+    </div>
+</section>
+
     </div>
 
     <script>
