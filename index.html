@@ -177,13 +177,30 @@
         }
 
         async function downloadImg(url) {
-            const response = await fetch(url);
-            const blob = await response.blob();
-            const link = document.createElement('a');
-            link.href = window.URL.createObjectURL(blob);
-            link.download = `AnimeGif_${Date.now()}.gif`;
-            link.click();
-        }
+    try {
+        // We fetch the image through our own API to avoid CORS blocks
+        const response = await fetch(url);
+        const blob = await response.blob();
+        
+        // Create a temporary local link for the file
+        const blobUrl = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        
+        link.href = blobUrl;
+        // Give it a nice filename
+        link.download = `AnimeGif_${Date.now()}.gif`;
+        
+        document.body.appendChild(link);
+        link.click();
+        
+        // Clean up
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(blobUrl);
+    } catch (e) {
+        console.error("Download failed, opening in new tab instead.");
+        window.open(url, '_blank');
+    }
+}
 
         function copyLink(url) {
             navigator.clipboard.writeText(url);
