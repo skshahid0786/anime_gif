@@ -80,14 +80,49 @@
         </section>
 
         <section id="page-docs" class="page">
-             <div class="docs-content">
-                <h1>API Docs</h1>
-                <p>Now powered by Shahid's custom Vercel endpoint.</p>
-                <div class="api-route">
-                    <code>/api/get-waifu?type=sfw&cat=waifu</code> <span class="method">GET</span>
-                </div>
-            </div>
-        </section>
+    <div class="docs-content">
+        <h1>AnimeGif API Docs</h1>
+        <p>The AnimeGif API is designed for high-speed delivery of curated anime visuals. Integrate our endpoints directly into your application using the documentation below.</p>
+        
+        <div class="info-box blue">
+            <i class="mdi mdi-information"></i>
+            For technical support or bug reports, please visit our repository on GitHub.
+        </div>
+
+        <div class="info-box orange">
+            <i class="mdi mdi-alert"></i>
+            Always use the <code>/api/get-waifu</code> route to ensure your requests are proxied through the AnimeGif secure layer.
+        </div>
+
+        <h3>Available Categories</h3>
+        <div class="cat-list">
+            <span>waifu</span><span>neko</span><span>shinobu</span><span>megumin</span><span>bully</span><span>cuddle</span><span>cry</span><span>hug</span><span>awoo</span><span>kiss</span><span>lick</span><span>pat</span><span>smug</span><span>bonk</span><span>yeet</span><span>blush</span><span>smile</span><span>wave</span><span>highfive</span><span>handhold</span><span>nom</span><span>bite</span><span>glomp</span><span>slap</span><span>kill</span><span>kick</span><span>happy</span><span>wink</span><span>poke</span><span>dance</span><span>cringe</span>
+        </div>
+
+        <h3>Get Single Image</h3>
+        <p>Receive one direct image stream from your chosen category.</p>
+        <div class="api-route">
+            <code>/api/get-waifu?type=type&cat=category</code> <span class="method">GET</span>
+        </div>
+        <p class="sub-text">Valid types: <b>sfw</b>, <b>nsfw</b>.</p>
+
+        <h3>Get Collection (Many)</h3>
+        <p>Receive an array of unique image URLs.</p>
+        <div class="api-route">
+            <code>/api/get-waifu?type=type&cat=category</code> <span class="method post">POST</span>
+        </div>
+
+        <h3>Request Fields</h3>
+        <table class="docs-table">
+            <tr><th>Field</th><th>Data Type</th><th>Description</th></tr>
+            <tr><td>exclude</td><td>String Array</td><td>List of URLs to ignore in the response.</td></tr>
+        </table>
+
+        <h3>Response Object</h3>
+        <pre class="code-block">{ "files": ["https://your-domain.vercel.app/api/get-waifu..."] }</pre>
+    </div>
+</section>
+
     </div>
 
     <script>
