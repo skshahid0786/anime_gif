@@ -2,22 +2,29 @@ export default async function handler(req, res) {
     const { type = 'sfw', cat = 'waifu' } = req.query;
 
     try {
-        // 1. Get the JSON from the original API
-        const apiRes = await fetch(`https://api.waifu.pics/${type}/${cat}`);
+        // If it's a POST request (for "many" images), we talk to the /many endpoint
+        const endpoint = req.method === 'POST' ? `many/${type}/${cat}` : `${type}/${cat}`;
+        
+        const apiRes = await fetch(`https://api.waifu.pics/${endpoint}`, {
+            method: req.method,
+            headers: { 'Content-Type': 'application/json' },
+            body: req.method === 'POST' ? JSON.stringify(req.body) : null
+        });
+        
         const data = await apiRes.json();
 
-        // 2. Fetch the actual image data from i.waifu.pics
-        const imageRes = await fetch(data.url);
-        const arrayBuffer = await imageRes.arrayBuffer();
-        const buffer = Buffer.from(arrayBuffer);
+        // If it's the gallery (many), we return the list of files
+        if (data.files) {
+            return res.status(200).json({ files: data.files });
+        }
 
-        // 3. Set the header so the browser knows it's an image
-        res.setHeader('Content-Type', 'image/jpeg');
-        res.setHeader('Cache-Control', 's-maxage=86400'); // Cache for 24 hours
-        
-        // 4. Send the actual image bytes
+        // If it's a single image, we proxy the bytes to hide the source
+        const imageRes = await fetch(data.url);
+        const buffer = Buffer.from(await imageRes.arrayBuffer());
+
+        res.setHeader('Content-Type', 'image/gif');
         res.status(200).send(buffer);
     } catch (error) {
-        res.status(500).send("Error loading image");
+        res.status(500).json({ error: "AnimeGif Engine Error" });
     }
 }
