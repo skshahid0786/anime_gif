@@ -11,6 +11,6 @@ export default async function handler(req, res) {
         const data = await apiRes.json();
         res.status(200).json(data);
     } catch (error) {
-        res.status(500).json({ error: "Connection Failed" });
+        res.status(500).json({ error: "Proxy Failed" });
     }
 }
