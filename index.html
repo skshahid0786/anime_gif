@@ -3,55 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AnimeGif | Developer Dashboard</title>
+    <title>AnimeGif | Pro Console</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css">
     <style>
-        :root { --bg: #0b0e14; --sidebar: #151921; --accent: #72a9e8; --orange: #ff9f43; --blue: #48dbfb; }
+        :root { --bg: #0b0e14; --sidebar: #151921; --accent: #72a9e8; --card: #1c2128; }
         body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: #fff; display: flex; }
         
+        /* Sidebar & Layout */
         .sidebar { width: 260px; height: 100vh; background: var(--sidebar); position: sticky; top: 0; transition: 0.3s; border-right: 1px solid #252a35; z-index: 100; }
         .sidebar.collapsed { width: 0; overflow: hidden; }
         .logo { padding: 30px; font-weight: bold; font-size: 22px; color: var(--accent); border-bottom: 1px solid #252a35; }
         .nav-menu { list-style: none; padding: 10px; margin: 0; }
         .nav-item { padding: 15px 20px; cursor: pointer; border-radius: 8px; margin-bottom: 5px; display: flex; align-items: center; gap: 15px; color: #a4a9b5; transition: 0.2s; }
         .nav-item.active, .nav-item:hover { background: #252a35; color: #fff; }
-
         .main-wrapper { flex: 1; min-width: 0; }
         .navbar { background: var(--sidebar); padding: 15px 25px; display: flex; align-items: center; gap: 20px; border-bottom: 1px solid #252a35; position: sticky; top: 0; z-index: 90; }
-        .menu-toggle { background: none; border: none; color: #fff; font-size: 22px; cursor: pointer; }
 
         .page { display: none; padding: 25px; }
         .page.active { display: block; }
 
-        /* 5-SECOND SCROLL ANIMATION */
+        /* GRID & HOVER ACTIONS */
         .scroll-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .img-container { position: relative; border-radius: 12px; overflow: hidden; background: #161b22; }
+        
         .scroll-grid img { 
-            width: 100%; border-radius: 12px; border: 1px solid #252a35;
-            opacity: 0; transform: translateY(30px); filter: blur(10px);
-            transition: all 5s cubic-bezier(0.2, 1, 0.3, 1); /* 5s duration */
+            width: 100%; display: block; border-radius: 12px; border: 1px solid #252a35;
+            opacity: 0; transform: translateY(20px); filter: blur(10px);
+            transition: all 5s cubic-bezier(0.2, 1, 0.3, 1); cursor: zoom-in;
         }
         .scroll-grid img.reveal { opacity: 1; transform: translateY(0); filter: blur(0); }
 
-        /* Controls */
-        .controls { display: flex; gap: 10px; margin-bottom: 20px; background: #1c2128; padding: 15px; border-radius: 12px; }
+        /* Hover Overlay */
+        .overlay { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; 
+            gap: 15px; opacity: 0; transition: 0.3s; backdrop-filter: blur(4px);
+        }
+        .img-container:hover .overlay { opacity: 1; }
+        .action-btn { 
+            background: #fff; color: #000; width: 45px; height: 45px; border-radius: 50%; 
+            display: flex; justify-content: center; align-items: center; cursor: pointer; border: none; font-size: 20px; transition: 0.2s;
+        }
+        .action-btn:hover { transform: scale(1.1); background: var(--accent); color: #fff; }
+
+        /* LIGHTBOX (Feature 4) */
+        #lightbox { 
+            position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); 
+            display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(10px);
+        }
+        #lightbox img { max-width: 90%; max-height: 80%; border-radius: 15px; box-shadow: 0 0 50px rgba(0,0,0,0.5); }
+        .close-lightbox { position: absolute; top: 30px; right: 40px; color: #fff; font-size: 40px; cursor: pointer; }
+
+        /* Docs & Controls */
+        .controls { display: flex; gap: 10px; margin-bottom: 20px; background: var(--card); padding: 15px; border-radius: 12px; }
         select { background: #0b0e14; color: #fff; border: 1px solid #30363d; padding: 12px; border-radius: 8px; flex: 1; }
         .btn-action { background: #ff4757; color: #fff; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; }
-
-        /* FULL DOCS STYLING */
-        .docs-content { max-width: 900px; margin: auto; line-height: 1.6; }
-        .info-box { padding: 15px; border-radius: 8px; margin: 20px 0; display: flex; gap: 15px; align-items: center; }
-        .info-box.blue { border: 1px solid var(--blue); color: var(--blue); background: rgba(72, 219, 251, 0.05); }
-        .info-box.orange { border: 1px solid var(--orange); color: var(--orange); background: rgba(255, 159, 67, 0.05); }
-        .cat-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 15px 0; }
-        .cat-list span { background: #252a35; padding: 4px 12px; border-radius: 20px; font-size: 13px; border: 1px solid #30363d; }
-        .api-route { background: #000; padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin: 10px 0; border: 1px solid #252a35; }
-        .method { background: #2ecc71; color: #000; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 12px; }
-        .code-block { background: #000; padding: 15px; border-radius: 8px; color: #7bed9f; overflow-x: auto; font-family: monospace; }
-        .docs-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .docs-table th, .docs-table td { text-align: left; padding: 12px; border-bottom: 1px solid #252a35; }
     </style>
 </head>
 <body>
+
+    <div id="lightbox" onclick="this.style.display='none'">
+        <span class="close-lightbox">&times;</span>
+        <img id="lightbox-img" src="" alt="Zoomed View">
+    </div>
 
     <nav class="sidebar" id="sidebar">
         <div class="logo">ANIMEGIF</div>
@@ -84,43 +98,15 @@
         </section>
 
         <section id="page-docs" class="page">
-            <div class="docs-content">
-                <h1>AnimeGif API Documentation</h1>
-                <p>The AnimeGif API provides easy access to thousands of anime visuals through a secure Vercel proxy.</p>
-                
-                <div class="info-box blue">
-                    <i class="mdi mdi-github"></i>
-                    Found an issue? Please report it at: github.com/AnimeGif/issues
-                </div>
-
-                <div class="info-box orange">
-                    <i class="mdi mdi-alert"></i>
-                    Use the <code>/api/get-waifu</code> route. Direct calls to source are rate-limited.
-                </div>
-
-                <h3>Available Categories (SFW)</h3>
-                <div class="cat-list">
-                    <span>waifu</span><span>neko</span><span>shinobu</span><span>megumin</span><span>bully</span><span>cuddle</span><span>cry</span><span>hug</span><span>awoo</span><span>kiss</span><span>lick</span><span>pat</span><span>smug</span><span>bonk</span><span>yeet</span><span>blush</span><span>smile</span><span>wave</span><span>highfive</span><span>handhold</span><span>nom</span><span>bite</span><span>glomp</span><span>slap</span><span>kill</span><span>kick</span><span>happy</span><span>wink</span><span>poke</span><span>dance</span><span>cringe</span>
-                </div>
-
-                <h3>Endpoints</h3>
-                <div class="api-route">
-                    <code>GET /api/get-waifu?type=sfw&cat=waifu</code>
-                    <span class="method">SINGLE</span>
-                </div>
-                <div class="api-route">
-                    <code>POST /api/get-waifu?type=sfw&cat=waifu</code>
-                    <span class="method" style="background:var(--accent)">COLLECTION</span>
-                </div>
-
-                <h3>Response Example</h3>
-                <pre class="code-block">{ "files": ["url1.png", "url2.jpg"...] }</pre>
-            </div>
+            <div class="docs-card"><h2>API Documentation</h2><p>Check console for endpoints.</p></div>
         </section>
     </div>
 
     <script>
         let isFetching = false;
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('reveal'); });
+        }, { threshold: 0.1 });
 
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('collapsed'); }
 
@@ -132,14 +118,30 @@
             if(pageId === 'home' && !document.getElementById('scroll-container').hasChildNodes()) loadBatch();
         }
 
-        // Intersection Observer to trigger 5s animation on scroll
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('reveal');
-                }
-            });
-        }, { threshold: 0.1 });
+        // CREATE IMAGE WITH OVERLAY
+        function createImgElement(url) {
+            const container = document.createElement('div');
+            container.className = 'img-container';
+            
+            const img = document.createElement('img');
+            img.src = url;
+            img.loading = "lazy";
+            img.onclick = () => openLightbox(url); // Feature 4
+
+            const overlay = document.createElement('div');
+            overlay.className = 'overlay';
+            
+            // Feature 2: Download & Copy Buttons
+            overlay.innerHTML = `
+                <button class="action-btn" onclick="downloadImg('${url}')" title="Download"><i class="mdi mdi-download"></i></button>
+                <button class="action-btn" onclick="copyLink('${url}')" title="Copy Link"><i class="mdi mdi-link-variant"></i></button>
+            `;
+
+            container.appendChild(img);
+            container.appendChild(overlay);
+            observer.observe(img);
+            return container;
+        }
 
         async function loadBatch() {
             if (isFetching) return;
@@ -149,12 +151,7 @@
                 const data = await res.json();
                 const container = document.getElementById('scroll-container');
                 if (data.files) {
-                    data.files.forEach(url => {
-                        const img = document.createElement('img');
-                        img.src = url;
-                        container.appendChild(img);
-                        observer.observe(img); // Start watching for scroll
-                    });
+                    data.files.forEach(url => container.appendChild(createImgElement(url)));
                 }
             } catch (e) { console.error("Home load failed"); }
             isFetching = false;
@@ -168,14 +165,29 @@
                 const res = await fetch(`/api/get-waifu?type=nsfw&cat=${cat}`, { method: 'POST' });
                 const data = await res.json();
                 if (data.files) {
-                    data.files.slice(0, 7).forEach(url => {
-                        const img = document.createElement('img');
-                        img.src = url;
-                        container.appendChild(img);
-                        observer.observe(img);
-                    });
+                    data.files.slice(0, 7).forEach(url => container.appendChild(createImgElement(url)));
                 }
             } catch (e) { console.error("NSFW failed"); }
+        }
+
+        // FEATURE LOGIC
+        function openLightbox(url) {
+            document.getElementById('lightbox-img').src = url;
+            document.getElementById('lightbox').style.display = 'flex';
+        }
+
+        async function downloadImg(url) {
+            const response = await fetch(url);
+            const blob = await response.blob();
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = `AnimeGif_${Date.now()}.gif`;
+            link.click();
+        }
+
+        function copyLink(url) {
+            navigator.clipboard.writeText(url);
+            alert("Link copied to clipboard!");
         }
 
         window.addEventListener('scroll', () => {
